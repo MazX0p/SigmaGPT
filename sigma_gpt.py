@@ -54,7 +54,8 @@ parser = PyEvtxParser(evtx_file_path)
 for record in parser.records():
     try:
         event_xml = ET.fromstring(record['data'])
-        event_data = event_xml.find('.//EventData')
+        namespace = {'ns': 'http://schemas.microsoft.com/win/2004/08/events/event'}
+        event_data = event_xml.find('.//ns:EventData', namespace)
         if event_data is not None:
             event_dict = {data.attrib['Name']: (data.text if data.text is not None else '') for data in event_data}
         else:
@@ -64,11 +65,12 @@ for record in parser.records():
         print('Error parsing XML data for record:', record['data'])
         continue
 
+
     for rule in sigma_rules:
         try:
             # Get the GPT-3.5 response for the Sigma rule and the EVTX event
             response = requests.post('https://api.openai.com/v1/engines/davinci-codex/completions', headers={'Authorization': f'Bearer {api_key}'}, json={
-                'prompt': f'{rule}\nEvent: {event["Event"]["EventData"]}\n',
+                'prompt': f'{rule}\nEvent: {event_data["Event"]["EventData"]}\n',
                 'max_tokens': 1024,
                 'n': 1,
                 'stop': '.'
@@ -78,7 +80,7 @@ for record in parser.records():
             if '[REDACTED]' in response['choices'][0]['text']:
                 # Print the Sigma rule and the event data, with relevant text highlighted in red
                 print(Fore.RED + 'Rule: ' + str(rule))
-                print(Fore.RED + 'Event: ' + json.dumps(event["Event"]["EventData"], indent=4))
+                print(Fore.RED + 'Event: ' + json.dumps(event_data["Event"]["EventData"], indent=4))
                 print(Fore.RESET)
         except Exception as e:
             print(f'Error processing Sigma rule: {e}')
