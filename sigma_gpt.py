@@ -1,9 +1,9 @@
 import requests
-import Evtxtract
 import json
 import os
 import yaml
 from colorama import init, Fore, Style
+from Evtx import Evtx
 
 # Load the ChatGPT API key from an environment variable
 api_key = os.environ.get('CHATGPT_API_KEY')
@@ -49,7 +49,7 @@ for path in sigma_rules_paths:
                         print(f'Error: No rules found in file "{os.path.join(path, filename)}"')
 
 # Process each event in the EVTX file and compare against the Sigma rules
-with Evtxtract.open(evtx_file_path) as evtx:
+with Evtx(evtx_file_path) as evtx:
     for record in evtx.records():
         event = json.loads(record.json())
 
