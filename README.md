@@ -17,7 +17,7 @@ The OpenAI GPT-3.5 language model is one of the most advanced language models av
 
 To install SigmaGPT, follow these steps:
 
-1. Clone this repository to your local machine: `git clone https://github.com/yourusername/SigmaGPT.git`
+1. Clone this repository to your local machine: `git clone https://github.com/MazX0p/SigmaGPT.git`
 2. Navigate to the cloned repository directory: `cd SigmaGPT`
 3. Install the required Python packages: `pip install -r requirements.txt`
 4. Set the `CHATGPT_API_KEY` environment variable to your OpenAI GPT-3 API key: `export CHATGPT_API_KEY=<your_api_key>`
